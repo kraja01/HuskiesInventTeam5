@@ -1,38 +1,64 @@
 import tkinter as tk
 from tkinter import messagebox
 import pandas as pd
+import os
 
-def search_excel(input_value):
-    try:
-        df = pd.read_excel('Shipping Book with RFID.xlsx')  # Update with your Excel file path
-        column_name = 'RFIDNumber'  # Update with the column name to search in
-        match = df[df[column_name] == input_value]
+def get_script_directory():
+    # Get the directory of the script
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    return script_dir
 
-        if not match.empty:
-            messagebox.showinfo("Match Found", f"Value '{input_value}' found in Excel!")
-        else:
-            messagebox.showinfo("No Match", f"No matching value found for '{input_value}'.")
+def search_value_in_files(input_value):
+    found_files = []
 
-    except Exception as e:
-        messagebox.showerror("Error", f"An error occurred: {str(e)}")
+    # Get the directory of the script
+    script_dir = get_script_directory()
+
+    # Loop through each file in the script directory
+    for file_name in os.listdir(script_dir):
+        if file_name.endswith('.xlsx'):
+            file_path = os.path.join(script_dir, file_name)
+            try:
+                # Read the Excel file
+                df = pd.read_excel(file_path)
+
+                # Specify the column name to search in (update 'YourColumnName')
+                column_name = 'RFIDNumber'
+
+                # Check if the input_value is in the specified column
+                if input_value in df[column_name].values:
+                    found_files.append(file_name)
+
+            except Exception as e:
+                messagebox.showwarning("Error", f"Error occurred while processing {file_name}: {e}")
+
+    return found_files
 
 def on_search():
-    input_value = entry.get().strip()
-    if input_value:
-        search_excel(input_value)
+    input_value = value_entry.get().strip()
+
+    if not input_value:
+        messagebox.showwarning("Incomplete Input", "Please provide a value to search.")
+        return
+
+    # Perform the search in the script directory
+    found_files = search_value_in_files(input_value)
+
+    if found_files:
+        messagebox.showinfo("Search Results", f"The value '{input_value}' was found in:\n" + "\n".join(found_files))
     else:
-        messagebox.showwarning("Empty Input", "Please enter a value to search.")
+        messagebox.showinfo("Search Results", f"The value '{input_value}' was not found in any of the files.")
 
 # Create main window
 root = tk.Tk()
 root.title("Excel Value Search")
 
 # Create GUI widgets
-label = tk.Label(root, text="Enter Value:")
-label.pack(pady=10)
+value_label = tk.Label(root, text="Enter Value:")
+value_label.pack(pady=10)
 
-entry = tk.Entry(root, width=30)
-entry.pack(pady=5)
+value_entry = tk.Entry(root, width=30)
+value_entry.pack(pady=5)
 
 search_button = tk.Button(root, text="Search", command=on_search)
 search_button.pack(pady=10)
