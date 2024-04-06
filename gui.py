@@ -2,11 +2,15 @@ import tkinter as tk
 from tkinter import messagebox
 import pandas as pd
 import os
+from remove_duplicates import remove_duplicate_rows_from_excel
 
 def get_script_directory():
     # Get the directory of the script
     script_dir = os.path.dirname(os.path.realpath(__file__))
     return script_dir
+
+# Remove duplicate rows from Excel files located in the script directory
+remove_duplicate_rows_from_excel(get_script_directory())
 
 def search_value_in_files(input_value):
     found_files = []
@@ -22,7 +26,7 @@ def search_value_in_files(input_value):
                 # Read the Excel file
                 df = pd.read_excel(file_path)
 
-                # Specify the column name to search in (update 'YourColumnName')
+                # Specify the column name to search in
                 column_name = 'RFIDNumber'
 
                 # Check if the input_value is in the specified column
