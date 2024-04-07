@@ -10,9 +10,9 @@ def get_script_directory():
 
 # Load Excel data into a DataFrame
 try:
-    df = pd.read_excel('NAV.xlsx')  # Load data from NAV.xlsx
+    df = pd.read_excel('RDIF Excel Spread.xlsx')  # Load data from RDIF Excel Spread.xlsx
 except FileNotFoundError:
-    messagebox.showerror("Error", "Excel file 'NAV.xlsx' not found.")
+    messagebox.showerror("Error", "Excel file 'RDIF Excel Spread.xlsx' not found.")
     exit()
 
 def search_value_in_files(input_value):
